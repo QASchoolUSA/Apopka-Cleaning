@@ -32,6 +32,7 @@ Set in `.env.local`:
 ## Build
 
 ```bash
-npm run build
+npm run build        # OpenNext bundle for Cloudflare Workers
+npm run build:next   # Next.js only (local check)
 npm start
 ```
