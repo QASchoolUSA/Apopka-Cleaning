@@ -13,10 +13,21 @@ Marketing site for **Apopka Cleaning** — a local cleaning company serving Apop
 
 ```bash
 npm install
+cp .env.example .env.local
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
+
+## Booking Broom
+
+Quote → book posts to `/api/bookings`, which forwards to Booking Broom.
+
+Set in `.env.local`:
+
+- `BOOKING_BROOM_URL=https://bookings.kedrik.com`
+- `BOOKING_BROOM_SITE_SLUG=apopka`
+- `BOOKING_BROOM_API_KEY=bb_apopka_dev_key`
 
 ## Build
 

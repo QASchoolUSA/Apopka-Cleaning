@@ -36,6 +36,8 @@ export function QuoteCalculator({
     date: "",
     notes: "",
   });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const quote = useMemo(
     () =>
@@ -59,9 +61,51 @@ export function QuoteCalculator({
     );
   }
 
-  function handleBook(e: React.FormEvent) {
+  async function handleBook(e: React.FormEvent) {
     e.preventDefault();
-    setStep("done");
+    setSubmitError(null);
+    setSubmitting(true);
+    try {
+      const freqLabel =
+        frequencies.find((f) => f.id === frequency)?.label ?? frequency;
+      const res = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customer_name: form.name.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          address: form.address.trim(),
+          service_type: quote.service.name,
+          preferred_date: form.date,
+          notes: [
+            `Estimate $${quote.total}`,
+            `Frequency: ${freqLabel}`,
+            selectedAddOns.length
+              ? `Add-ons: ${selectedAddOns.join(", ")}`
+              : null,
+            form.notes.trim() || null,
+          ]
+            .filter(Boolean)
+            .join(" · "),
+        }),
+      });
+      const data = (await res.json().catch(() => ({}))) as {
+        ok?: boolean;
+        message?: string;
+      };
+      if (!res.ok || data.ok === false) {
+        setSubmitError(
+          data.message || "Unable to submit booking. Please try again.",
+        );
+        return;
+      }
+      setStep("done");
+    } catch {
+      setSubmitError("Unable to submit booking. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (step === "done") {
@@ -346,8 +390,14 @@ export function QuoteCalculator({
               />
             </div>
 
-            <Button type="submit" className="w-full sm:w-auto">
-              Request booking
+            {submitError && (
+              <p className="text-sm font-medium text-red-700" role="alert">
+                {submitError}
+              </p>
+            )}
+
+            <Button type="submit" className="w-full sm:w-auto" disabled={submitting}>
+              {submitting ? "Sending…" : "Request booking"}
             </Button>
           </form>
         )}
