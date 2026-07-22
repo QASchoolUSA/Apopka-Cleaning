@@ -21,5 +21,10 @@
   },
   "observability": {
     "enabled": true
+  },
+  "vars": {
+    "BOOKING_BROOM_URL": "https://bookings.kedrik.com",
+    "BOOKING_BROOM_SITE_SLUG": "apopka",
+    "BOOKING_BROOM_API_KEY": "bb_apopka_dev_key"
   }
 }
