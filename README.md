@@ -12,9 +12,9 @@ Marketing site for **Apopka Cleaning** — a local cleaning company serving Apop
 ## Develop
 
 ```bash
-npm install
+pnpm install
 cp .env.example .env.local
-npm run dev
+pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
@@ -34,7 +34,7 @@ Cloudflare dashboard **Build variables** are not enough for `/api/bookings` — 
 ## Build
 
 ```bash
-npm run build        # OpenNext bundle for Cloudflare Workers
-npm run build:next   # Next.js only (local check)
-npm start
+pnpm build        # OpenNext bundle for Cloudflare Workers
+pnpm build:next   # Next.js only (local check)
+pnpm start
 ```

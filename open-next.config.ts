@@ -10,6 +10,6 @@ const config = defineCloudflareConfig({
 
 export default {
 	...config,
-	// Avoid `npm run build` recursion when Cloudflare Workers Builds runs opennext.
+	// Avoid recursing back into the `build` script when Cloudflare Workers Builds runs opennext.
 	buildCommand: "next build",
 };
