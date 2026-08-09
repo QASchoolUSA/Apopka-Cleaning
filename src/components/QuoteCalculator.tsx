@@ -78,16 +78,23 @@ export function QuoteCalculator({
           address: form.address.trim(),
           service_type: quote.service.name,
           preferred_date: form.date,
-          notes: [
-            `Estimate $${quote.total}`,
-            `Frequency: ${freqLabel}`,
-            selectedAddOns.length
-              ? `Add-ons: ${selectedAddOns.join(", ")}`
-              : null,
-            form.notes.trim() || null,
-          ]
-            .filter(Boolean)
-            .join(" · "),
+          notes: form.notes.trim() || undefined,
+          property: {
+            bedrooms: isCommercial ? undefined : bedrooms,
+            bathrooms,
+            square_feet: sqFt,
+            home_type: quote.service.shortName,
+          },
+          quote: {
+            estimate: quote.total,
+            currency: "USD",
+            frequency: freqLabel,
+            add_ons: selectedAddOns.map((id) => {
+              const addOn = addOns.find((a) => a.id === id);
+              return { label: addOn?.label ?? id, price: addOn?.price };
+            }),
+            payment_terms: "Due after cleaning is complete",
+          },
         }),
       });
       const data = (await res.json().catch(() => ({}))) as {
@@ -191,29 +198,30 @@ export function QuoteCalculator({
 
             {!isCommercial && (
               <div className="grid gap-6 sm:grid-cols-2">
-                <NumberField
+                <CountPills
                   label="Bedrooms"
                   value={bedrooms}
                   min={0}
-                  max={8}
+                  max={5}
+                  zeroLabel="Studio"
                   onChange={setBedrooms}
                 />
-                <NumberField
+                <CountPills
                   label="Bathrooms"
                   value={bathrooms}
                   min={1}
-                  max={6}
+                  max={4}
                   onChange={setBathrooms}
                 />
               </div>
             )}
 
             {isCommercial && (
-              <NumberField
+              <CountPills
                 label="Restrooms"
                 value={bathrooms}
                 min={1}
-                max={12}
+                max={8}
                 onChange={setBathrooms}
               />
             )}
@@ -442,44 +450,48 @@ export function QuoteCalculator({
   );
 }
 
-function NumberField({
+/** One tap per answer beats stepping a counter, especially on mobile. */
+function CountPills({
   label,
   value,
   min,
   max,
+  zeroLabel,
   onChange,
 }: {
   label: string;
   value: number;
   min: number;
   max: number;
+  zeroLabel?: string;
   onChange: (n: number) => void;
 }) {
+  const choices = Array.from({ length: max - min + 1 }, (_, i) => min + i);
+
   return (
     <div>
       <p className="text-sm font-semibold text-[var(--lagoon-ink)]">{label}</p>
-      <div className="mt-2 flex items-center gap-3">
-        <button
-          type="button"
-          aria-label={`Decrease ${label}`}
-          disabled={value <= min}
-          onClick={() => onChange(Math.max(min, value - 1))}
-          className="flex size-10 cursor-pointer items-center justify-center rounded-full border border-[var(--border)] text-lg text-[var(--lagoon)] transition-colors duration-200 hover:bg-[var(--mist)] disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          −
-        </button>
-        <span className="w-8 text-center font-[family-name:var(--font-display)] text-2xl font-semibold text-[var(--lagoon-ink)]">
-          {value}
-        </span>
-        <button
-          type="button"
-          aria-label={`Increase ${label}`}
-          disabled={value >= max}
-          onClick={() => onChange(Math.min(max, value + 1))}
-          className="flex size-10 cursor-pointer items-center justify-center rounded-full border border-[var(--border)] text-lg text-[var(--lagoon)] transition-colors duration-200 hover:bg-[var(--mist)] disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          +
-        </button>
+      <div className="mt-2 flex flex-wrap gap-2">
+        {choices.map((choice) => (
+          <button
+            key={choice}
+            type="button"
+            aria-pressed={value === choice}
+            onClick={() => onChange(choice)}
+            className={cn(
+              "min-w-11 cursor-pointer rounded-full border px-3.5 py-2 text-sm font-medium transition-all duration-200",
+              value === choice
+                ? "border-[var(--aqua)] bg-[var(--aqua-soft)] text-[var(--lagoon-ink)]"
+                : "border-[var(--border)] text-[var(--muted-fg)] hover:border-[var(--lagoon)]/30 hover:bg-[var(--mist)]",
+            )}
+          >
+            {choice === 0 && zeroLabel
+              ? zeroLabel
+              : choice === max
+                ? `${choice}+`
+                : choice}
+          </button>
+        ))}
       </div>
     </div>
   );
