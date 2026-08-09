@@ -5,17 +5,22 @@ import { Suspense } from "react";
 import { QuoteCalculator } from "@/components/QuoteCalculator";
 import type { ServiceSlug } from "@/lib/services";
 import { getService } from "@/lib/services";
+import { DEFAULT_PRICING_CONFIG, type PricingConfig } from "@/lib/pricing";
 
-function CalculatorFromQuery() {
+function CalculatorFromQuery({ config }: { config: PricingConfig }) {
   const searchParams = useSearchParams();
   const raw = searchParams.get("service") ?? "residential";
   const service = getService(raw);
   const defaultService = (service?.slug ?? "residential") as ServiceSlug;
 
-  return <QuoteCalculator defaultService={defaultService} />;
+  return <QuoteCalculator defaultService={defaultService} config={config} />;
 }
 
-export function QuoteWithServiceParam() {
+export function QuoteWithServiceParam({
+  config = DEFAULT_PRICING_CONFIG,
+}: {
+  config?: PricingConfig;
+}) {
   return (
     <Suspense
       fallback={
@@ -24,7 +29,7 @@ export function QuoteWithServiceParam() {
         </div>
       }
     >
-      <CalculatorFromQuery />
+      <CalculatorFromQuery config={config} />
     </Suspense>
   );
 }

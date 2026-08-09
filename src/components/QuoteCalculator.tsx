@@ -2,15 +2,13 @@
 
 import { useMemo, useState } from "react";
 import { Check, ChevronRight } from "lucide-react";
+import { business, services, type ServiceSlug } from "@/lib/services";
 import {
-  addOns,
-  business,
+  DEFAULT_PRICING_CONFIG,
   calculateQuote,
-  frequencies,
-  services,
   type Frequency,
-  type ServiceSlug,
-} from "@/lib/services";
+  type PricingConfig,
+} from "@/lib/pricing";
 import { Button } from "@/components/Button";
 import { cn } from "@/lib/utils";
 
@@ -18,9 +16,12 @@ type Step = "calc" | "book" | "done";
 
 export function QuoteCalculator({
   defaultService = "residential",
+  config = DEFAULT_PRICING_CONFIG,
 }: {
   defaultService?: ServiceSlug;
+  config?: PricingConfig;
 }) {
+  const { addOns, frequencies } = config;
   const [step, setStep] = useState<Step>("calc");
   const [serviceSlug, setServiceSlug] = useState<ServiceSlug>(defaultService);
   const [bedrooms, setBedrooms] = useState(3);
@@ -41,15 +42,18 @@ export function QuoteCalculator({
 
   const quote = useMemo(
     () =>
-      calculateQuote({
-        serviceSlug,
-        bedrooms,
-        bathrooms,
-        sqFt,
-        frequency,
-        addOnIds: selectedAddOns,
-      }),
-    [serviceSlug, bedrooms, bathrooms, sqFt, frequency, selectedAddOns],
+      calculateQuote(
+        {
+          serviceSlug,
+          bedrooms,
+          bathrooms,
+          sqFt,
+          frequency,
+          addOnIds: selectedAddOns,
+        },
+        config,
+      ),
+    [serviceSlug, bedrooms, bathrooms, sqFt, frequency, selectedAddOns, config],
   );
 
   const isCommercial =
@@ -67,7 +71,7 @@ export function QuoteCalculator({
     setSubmitting(true);
     try {
       const freqLabel =
-        frequencies.find((f) => f.id === frequency)?.label ?? frequency;
+        frequencies.find((f) => f.key === frequency)?.label ?? frequency;
       const res = await fetch("/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -90,7 +94,7 @@ export function QuoteCalculator({
             currency: "USD",
             frequency: freqLabel,
             add_ons: selectedAddOns.map((id) => {
-              const addOn = addOns.find((a) => a.id === id);
+              const addOn = addOns.find((a) => a.key === id);
               return { label: addOn?.label ?? id, price: addOn?.price };
             }),
             payment_terms: "Due after cleaning is complete",
@@ -261,12 +265,12 @@ export function QuoteCalculator({
               <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
                 {frequencies.map((f) => (
                   <button
-                    key={f.id}
+                    key={f.key}
                     type="button"
-                    onClick={() => setFrequency(f.id)}
+                    onClick={() => setFrequency(f.key)}
                     className={cn(
                       "cursor-pointer rounded-xl border px-3 py-3 text-center text-sm font-medium transition-all duration-200",
-                      frequency === f.id
+                      frequency === f.key
                         ? "border-[var(--aqua)] bg-[var(--aqua-soft)] text-[var(--lagoon-ink)]"
                         : "border-[var(--border)] text-[var(--muted-fg)] hover:border-[var(--lagoon)]/30",
                     )}
@@ -288,12 +292,12 @@ export function QuoteCalculator({
               </legend>
               <div className="mt-3 grid gap-2 sm:grid-cols-2">
                 {addOns.map((a) => {
-                  const selected = selectedAddOns.includes(a.id);
+                  const selected = selectedAddOns.includes(a.key);
                   return (
                     <button
-                      key={a.id}
+                      key={a.key}
                       type="button"
-                      onClick={() => toggleAddOn(a.id)}
+                      onClick={() => toggleAddOn(a.key)}
                       className={cn(
                         "flex cursor-pointer items-center justify-between rounded-xl border px-4 py-3 text-left text-sm transition-all duration-200",
                         selected
@@ -336,7 +340,7 @@ export function QuoteCalculator({
                 Estimated total{" "}
                 <strong className="text-[var(--lagoon)]">${quote.total}</strong>{" "}
                 · {quote.service.shortName} ·{" "}
-                {frequencies.find((f) => f.id === frequency)?.label}
+                {frequencies.find((f) => f.key === frequency)?.label}
               </p>
             </div>
 
@@ -419,7 +423,7 @@ export function QuoteCalculator({
           ${quote.total}
         </p>
         <p className="mt-1 text-sm text-white/65">
-          {frequencies.find((f) => f.id === frequency)?.label} ·{" "}
+          {frequencies.find((f) => f.key === frequency)?.label} ·{" "}
           {quote.service.shortName}
         </p>
 

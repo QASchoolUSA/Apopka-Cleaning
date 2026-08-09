@@ -17,11 +17,6 @@ export type Service = {
   includes: string[];
   idealFor: string[];
   duration: string;
-  startingAt: number;
-  baseRate: number;
-  perBedroom: number;
-  perBathroom: number;
-  perSqFt: number;
 };
 
 export const services: Service[] = [
@@ -49,11 +44,6 @@ export const services: Service[] = [
       "Families who want consistency",
     ],
     duration: "2–4 hours",
-    startingAt: 129,
-    baseRate: 89,
-    perBedroom: 25,
-    perBathroom: 30,
-    perSqFt: 0.05,
   },
   {
     slug: "deep-cleaning",
@@ -79,11 +69,6 @@ export const services: Service[] = [
       "Homes that need extra attention",
     ],
     duration: "4–7 hours",
-    startingAt: 249,
-    baseRate: 179,
-    perBedroom: 40,
-    perBathroom: 45,
-    perSqFt: 0.08,
   },
   {
     slug: "move-in-out",
@@ -109,11 +94,6 @@ export const services: Service[] = [
       "New homeowners before unpacking",
     ],
     duration: "5–8 hours",
-    startingAt: 299,
-    baseRate: 219,
-    perBedroom: 45,
-    perBathroom: 50,
-    perSqFt: 0.09,
   },
   {
     slug: "commercial",
@@ -139,11 +119,6 @@ export const services: Service[] = [
       "Shared workspaces",
     ],
     duration: "Custom schedule",
-    startingAt: 199,
-    baseRate: 149,
-    perBedroom: 0,
-    perBathroom: 35,
-    perSqFt: 0.06,
   },
   {
     slug: "office",
@@ -169,11 +144,6 @@ export const services: Service[] = [
       "Professional practices",
     ],
     duration: "2–5 hours",
-    startingAt: 159,
-    baseRate: 119,
-    perBedroom: 0,
-    perBathroom: 30,
-    perSqFt: 0.055,
   },
   {
     slug: "carpet-upholstery",
@@ -199,77 +169,11 @@ export const services: Service[] = [
       "Seasonal refresh",
     ],
     duration: "2–4 hours",
-    startingAt: 149,
-    baseRate: 99,
-    perBedroom: 35,
-    perBathroom: 0,
-    perSqFt: 0.12,
   },
 ];
 
 export function getService(slug: string): Service | undefined {
   return services.find((s) => s.slug === slug);
-}
-
-export const addOns = [
-  { id: "fridge", label: "Inside fridge", price: 35 },
-  { id: "oven", label: "Inside oven", price: 35 },
-  { id: "windows", label: "Interior windows", price: 45 },
-  { id: "laundry", label: "Laundry (1 load)", price: 25 },
-  { id: "blinds", label: "Blinds dusted", price: 30 },
-  { id: "garage", label: "Garage sweep", price: 40 },
-] as const;
-
-export type Frequency = "one-time" | "weekly" | "biweekly" | "monthly";
-
-export const frequencies: {
-  id: Frequency;
-  label: string;
-  discount: number;
-}[] = [
-  { id: "one-time", label: "One-time", discount: 0 },
-  { id: "weekly", label: "Weekly", discount: 0.2 },
-  { id: "biweekly", label: "Biweekly", discount: 0.15 },
-  { id: "monthly", label: "Monthly", discount: 0.1 },
-];
-
-export type QuoteInput = {
-  serviceSlug: ServiceSlug;
-  bedrooms: number;
-  bathrooms: number;
-  sqFt: number;
-  frequency: Frequency;
-  addOnIds: string[];
-};
-
-export function calculateQuote(input: QuoteInput): {
-  subtotal: number;
-  discount: number;
-  total: number;
-  service: Service;
-} {
-  const service = getService(input.serviceSlug);
-  if (!service) {
-    throw new Error("Unknown service");
-  }
-
-  const roomCost =
-    service.baseRate +
-    input.bedrooms * service.perBedroom +
-    input.bathrooms * service.perBathroom +
-    Math.max(0, input.sqFt - 800) * service.perSqFt;
-
-  const addOnCost = input.addOnIds.reduce((sum, id) => {
-    const addOn = addOns.find((a) => a.id === id);
-    return sum + (addOn?.price ?? 0);
-  }, 0);
-
-  const subtotal = Math.round(roomCost + addOnCost);
-  const freq = frequencies.find((f) => f.id === input.frequency);
-  const discount = Math.round(subtotal * (freq?.discount ?? 0));
-  const total = Math.max(subtotal - discount, service.startingAt);
-
-  return { subtotal, discount, total, service };
 }
 
 export const business = {

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/PageHero";
 import { QuoteWithServiceParam } from "@/components/QuoteWithServiceParam";
+import { getPricingConfig } from "@/lib/pricing-config";
 
 export const metadata: Metadata = {
   title: "Free Quote & Book Cleaning",
@@ -8,7 +9,9 @@ export const metadata: Metadata = {
     "Calculate your cleaning price instantly and book a visit with Apopka Cleaning in Apopka, FL.",
 };
 
-export default function QuotePage() {
+export default async function QuotePage() {
+  const config = await getPricingConfig();
+
   return (
     <>
       <PageHero
@@ -21,7 +24,7 @@ export default function QuotePage() {
 
       <section id="calculator" className="mist-wash scroll-mt-8">
         <div className="mx-auto max-w-6xl px-5 py-14 md:px-8 md:py-20">
-          <QuoteWithServiceParam />
+          <QuoteWithServiceParam config={config} />
         </div>
       </section>
     </>

@@ -4,6 +4,8 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
 import { services } from "@/lib/services";
+import { startingAt } from "@/lib/pricing";
+import { getPricingConfig } from "@/lib/pricing-config";
 
 export const metadata: Metadata = {
   title: "Cleaning Services",
@@ -11,7 +13,9 @@ export const metadata: Metadata = {
     "Browse residential, deep clean, move-in/out, commercial, office, and carpet cleaning services in Apopka, FL.",
 };
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const config = await getPricingConfig();
+
   return (
     <>
       <PageHero
@@ -45,7 +49,7 @@ export default function ServicesPage() {
               </div>
               <div className={index % 2 === 1 ? "md:order-1" : ""}>
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--lagoon)]">
-                  From ${service.startingAt}
+                  From ${startingAt(service.slug, config)}
                 </p>
                 <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--lagoon-ink)]">
                   {service.name}

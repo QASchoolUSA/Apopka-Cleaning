@@ -4,6 +4,8 @@ import { Check } from "lucide-react";
 import { Button } from "@/components/Button";
 import { PageHero } from "@/components/PageHero";
 import { getService, services } from "@/lib/services";
+import { startingAt } from "@/lib/pricing";
+import { getPricingConfig } from "@/lib/pricing-config";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -25,6 +27,8 @@ export default async function ServiceDetailPage({ params }: Props) {
   const { slug } = await params;
   const service = getService(slug);
   if (!service) notFound();
+
+  const config = await getPricingConfig();
 
   return (
     <>
@@ -73,7 +77,7 @@ export default async function ServiceDetailPage({ params }: Props) {
               <div>
                 <dt className="text-white/55">Starting at</dt>
                 <dd className="mt-1 font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--aqua)]">
-                  ${service.startingAt}
+                  ${startingAt(service.slug, config)}
                 </dd>
               </div>
               <div>
