@@ -16,6 +16,7 @@ export async function POST(request: Request) {
       preferred_date?: string;
       preferred_time?: string;
       notes?: string;
+      intent?: "quote" | "book";
       property?: BookingBroomProperty;
       quote?: BookingBroomQuote;
     };
@@ -36,6 +37,8 @@ export async function POST(request: Request) {
       preferred_date: json.preferred_date?.trim(),
       preferred_time: json.preferred_time?.trim(),
       notes: json.notes?.trim(),
+      intent:
+        json.intent === "quote" || json.intent === "book" ? json.intent : undefined,
       property: json.property,
       quote: json.quote,
     });

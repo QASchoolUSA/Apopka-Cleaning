@@ -29,6 +29,7 @@ export type BookingBroomPayload = {
   preferred_date?: string;
   preferred_time?: string;
   notes?: string;
+  intent?: "quote" | "book";
   property?: BookingBroomProperty;
   quote?: BookingBroomQuote;
 };

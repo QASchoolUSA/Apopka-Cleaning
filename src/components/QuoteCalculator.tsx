@@ -82,6 +82,7 @@ export function QuoteCalculator({
           address: form.address.trim(),
           service_type: quote.service.name,
           preferred_date: form.date,
+          intent: "quote",
           notes: form.notes.trim() || undefined,
           property: {
             bedrooms: isCommercial ? undefined : bedrooms,
