@@ -179,6 +179,7 @@ export function getService(slug: string): Service | undefined {
 export const business = {
   name: "Apopka Cleaning",
   city: "Apopka, FL",
+  url: "https://apopkacleaning.com",
   phone: "(407) 555-0148",
   phoneHref: "tel:+14075550148",
   email: "hello@apopkacleaning.com",

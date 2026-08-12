@@ -18,6 +18,7 @@ const body = Source_Sans_3({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(business.url),
   title: {
     default: `${business.name} | Professional Cleaning in Apopka, FL`,
     template: `%s | ${business.name}`,
