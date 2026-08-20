@@ -1,21 +1,21 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 /**
- * Reads a variable from the Node environment, falling back to the Cloudflare
- * worker bindings when deployed. Secrets set with `wrangler secret put` only
- * appear on the worker env, not `process.env`.
+ * Reads a Cloudflare Worker binding first (wrangler.jsonc vars / secrets),
+ * then `process.env`. Must be async: after any `await` in a route, the sync
+ * AsyncLocalStorage context is gone and `getCloudflareContext()` throws.
  */
-export function readEnv(name: string): string | undefined {
-  const fromProcess = process.env[name];
-  if (fromProcess) return fromProcess;
-
+export async function readEnv(name: string): Promise<string | undefined> {
   try {
-    const { env } = getCloudflareContext();
+    const { env } = await getCloudflareContext({ async: true });
     const fromWorker = env[name as keyof typeof env];
-    if (typeof fromWorker === "string") return fromWorker;
+    if (typeof fromWorker === "string" && fromWorker.trim()) {
+      return fromWorker.trim();
+    }
   } catch {
     // Not running inside the Cloudflare worker (e.g. next dev).
   }
 
-  return undefined;
+  const fromProcess = process.env[name]?.trim();
+  return fromProcess || undefined;
 }

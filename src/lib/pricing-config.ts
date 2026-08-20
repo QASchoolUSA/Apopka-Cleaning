@@ -18,14 +18,17 @@ import {
 const REVALIDATE_SECONDS = 300;
 
 export async function getPricingConfig(): Promise<PricingConfig> {
-  const baseUrl = (readEnv("BOOKING_BROOM_URL") ?? "").replace(/\/$/, "");
-  const apiKey = readEnv("BOOKING_BROOM_API_KEY");
+  const baseUrl = ((await readEnv("BOOKING_BROOM_URL")) ?? "").replace(
+    /\/$/,
+    "",
+  );
+  const apiKey = await readEnv("BOOKING_BROOM_API_KEY");
   if (!baseUrl || !apiKey) return DEFAULT_PRICING_CONFIG;
 
   try {
     const res = await fetch(`${baseUrl}/api/pricing`, {
       headers: {
-        "X-Site-Slug": readEnv("BOOKING_BROOM_SITE_SLUG") ?? "apopka",
+        "X-Site-Slug": (await readEnv("BOOKING_BROOM_SITE_SLUG")) ?? "apopka",
         "X-Api-Key": apiKey,
       },
       next: { revalidate: REVALIDATE_SECONDS },

@@ -45,7 +45,11 @@ export async function POST(request: Request) {
 
     if (!result.ok) {
       return NextResponse.json(
-        { ok: false, message: result.message || "Booking failed" },
+        {
+          ok: false,
+          message: result.message || "Booking failed",
+          error: result.error,
+        },
         { status: 502 },
       );
     }

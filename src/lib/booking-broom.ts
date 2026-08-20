@@ -38,22 +38,23 @@ export type BookingBroomResult = {
   ok: boolean;
   id?: string;
   message?: string;
+  error?: string;
 };
 
-function getConfig() {
+async function getConfig() {
   return {
     baseUrl: (
-      readEnv("BOOKING_BROOM_URL") || "https://bookings.kedrik.com"
+      (await readEnv("BOOKING_BROOM_URL")) || "https://bookings.kedrik.com"
     ).replace(/\/$/, ""),
-    apiKey: readEnv("BOOKING_BROOM_API_KEY") || "",
-    siteSlug: readEnv("BOOKING_BROOM_SITE_SLUG") || "apopka",
+    apiKey: (await readEnv("BOOKING_BROOM_API_KEY")) || "",
+    siteSlug: (await readEnv("BOOKING_BROOM_SITE_SLUG")) || "apopka",
   };
 }
 
 export async function createBooking(
   payload: BookingBroomPayload,
 ): Promise<BookingBroomResult> {
-  const config = getConfig();
+  const config = await getConfig();
 
   if (!config.apiKey) {
     console.error("[booking-broom] BOOKING_BROOM_API_KEY is not set");
@@ -80,10 +81,18 @@ export async function createBooking(
 
   if (!res.ok) {
     const text = await res.text().catch(() => "");
-    console.error("[booking-broom] error", res.status, text);
+    let upstream = text.slice(0, 300);
+    try {
+      const parsed = JSON.parse(text) as { error?: string };
+      if (parsed.error) upstream = parsed.error;
+    } catch {
+      // Keep raw body snippet.
+    }
+    console.error("[booking-broom] error", res.status, upstream);
     return {
       ok: false,
       message: "Unable to submit booking. Please try again or call us.",
+      error: upstream || `HTTP ${res.status}`,
     };
   }
 
