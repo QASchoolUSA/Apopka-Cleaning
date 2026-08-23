@@ -27,12 +27,18 @@
   },
   "kv_namespaces": [
     {
+      // CF namespace title: BOOKING_OUTBOX_APOPKA
       "binding": "BOOKING_OUTBOX",
-      "id": "REPLACE_WITH_BOOKING_OUTBOX_KV_ID",
-      "preview_id": "REPLACE_WITH_BOOKING_OUTBOX_KV_PREVIEW_ID"
+      "id": "fe3abd440746411a96b89c99b9c6c51c"
     }
   ],
   "vars": {
-    "BOOKING_BROOM_API_KEY": "bb_apopka_dev_key"
-  }
+    "NEXT_PUBLIC_SITE_URL": "https://apopkacleaning.com"
+  },
+  "routes": [
+    {
+      "pattern": "apopkacleaning.com",
+      "custom_domain": true
+    }
+  ]
 }
