@@ -49,7 +49,7 @@ async function getConfig() {
       (await readEnv("BOOKING_BROOM_URL")) || "https://app.bookingbroom.com"
     ).replace(/\/$/, ""),
     apiKey: (await readEnv("BOOKING_BROOM_API_KEY")) || "",
-    siteSlug: (await readEnv("BOOKING_BROOM_SITE_SLUG")) || "apopka",
+    siteSlug: "apopka",
   };
 }
 

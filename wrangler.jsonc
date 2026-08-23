@@ -33,7 +33,6 @@
     }
   ],
   "vars": {
-    "BOOKING_BROOM_SITE_SLUG": "apopka",
     "BOOKING_BROOM_API_KEY": "bb_apopka_dev_key"
   }
 }

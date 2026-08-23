@@ -28,7 +28,7 @@ Set in `.env.local` for local dev. Production values live in `wrangler.jsonc` (`
 Cloudflare dashboard **Build variables** are not enough for `/api/bookings` — runtime vars must be set under **Variables & Secrets**, or use the `wrangler.jsonc` `vars` block (current setup).
 
 - `BOOKING_BROOM_URL=https://app.bookingbroom.com`
-- `BOOKING_BROOM_SITE_SLUG=apopka`
+- Site slug hardcoded to `apopka` (no `BOOKING_BROOM_SITE_SLUG` env)
 - `BOOKING_BROOM_API_KEY=bb_apopka_dev_key`
 
 ## Build
