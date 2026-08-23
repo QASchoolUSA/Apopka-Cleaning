@@ -39,12 +39,14 @@ export type BookingBroomResult = {
   id?: string;
   message?: string;
   error?: string;
+  degraded?: boolean;
+  fallback?: "kv" | "telegram";
 };
 
 async function getConfig() {
   return {
     baseUrl: (
-      (await readEnv("BOOKING_BROOM_URL")) || "https://bookings.kedrik.com"
+      (await readEnv("BOOKING_BROOM_URL")) || "https://app.bookingbroom.com"
     ).replace(/\/$/, ""),
     apiKey: (await readEnv("BOOKING_BROOM_API_KEY")) || "",
     siteSlug: (await readEnv("BOOKING_BROOM_SITE_SLUG")) || "apopka",
@@ -55,56 +57,82 @@ export async function createBooking(
   payload: BookingBroomPayload,
 ): Promise<BookingBroomResult> {
   const config = await getConfig();
-
-  if (!config.apiKey) {
-    console.error("[booking-broom] BOOKING_BROOM_API_KEY is not set");
-    return {
-      ok: false,
-      message: "Booking is not configured. Please call us.",
-    };
-  }
-
-  const body = {
-    site_slug: config.siteSlug,
-    api_key: config.apiKey,
+  const idempotencyKey =
+    `lead_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+  const wirePayload: Record<string, unknown> = {
     ...payload,
+    idempotency_key: idempotencyKey,
   };
 
-  const res = await fetch(`${config.baseUrl}/api/bookings`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    let upstream = text.slice(0, 300);
-    try {
-      const parsed = JSON.parse(text) as { error?: string };
-      if (parsed.error) upstream = parsed.error;
-    } catch {
-      // Keep raw body snippet.
+  async function fallback(lastError: string): Promise<BookingBroomResult> {
+    const { captureFailedBookingForward } = await import("@/lib/booking-outbox");
+    const captured = await captureFailedBookingForward({
+      payload: wirePayload,
+      idempotencyKey,
+      lastError,
+    });
+    if (captured.captured) {
+      return {
+        ok: true,
+        degraded: true,
+        fallback: captured.via,
+        message: "Request received. We will confirm shortly.",
+      };
     }
-    console.error("[booking-broom] error", res.status, upstream);
     return {
       ok: false,
       message: "Unable to submit booking. Please try again or call us.",
-      error: upstream || `HTTP ${res.status}`,
+      error: captured.error || lastError,
     };
   }
 
-  const data = (await res.json().catch(() => ({}))) as {
-    id?: string;
-    booking_id?: string;
-    message?: string;
-  };
+  if (!config.apiKey) {
+    console.error("[booking-broom] BOOKING_BROOM_API_KEY is not set");
+    return fallback("Booking is not configured");
+  }
 
-  return {
-    ok: true,
-    id: data.id || data.booking_id,
-    message: data.message || "Booking received.",
-  };
+  try {
+    const res = await fetch(`${config.baseUrl}/api/bookings`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "Idempotency-Key": idempotencyKey,
+      },
+      body: JSON.stringify({
+        site_slug: config.siteSlug,
+        api_key: config.apiKey,
+        ...wirePayload,
+      }),
+    });
+
+    if (!res.ok) {
+      const responseText = await res.text().catch(() => "");
+      let upstream = responseText.slice(0, 300);
+      try {
+        const parsed = JSON.parse(responseText) as { error?: string };
+        if (parsed.error) upstream = parsed.error;
+      } catch {
+        // Keep raw body snippet.
+      }
+      console.error("[booking-broom] error", res.status, upstream);
+      return fallback(upstream || `HTTP ${res.status}`);
+    }
+
+    const data = (await res.json().catch(() => ({}))) as {
+      id?: string;
+      booking_id?: string;
+      message?: string;
+    };
+
+    return {
+      ok: true,
+      id: data.id || data.booking_id,
+      message: data.message || "Booking received.",
+    };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error("[booking-broom] forward error:", message);
+    return fallback(message);
+  }
 }

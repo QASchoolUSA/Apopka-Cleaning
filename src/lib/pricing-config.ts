@@ -18,7 +18,7 @@ import {
 const REVALIDATE_SECONDS = 300;
 
 export async function getPricingConfig(): Promise<PricingConfig> {
-  const baseUrl = ((await readEnv("BOOKING_BROOM_URL")) ?? "").replace(
+  const baseUrl = ((await readEnv("BOOKING_BROOM_URL")) || "https://app.bookingbroom.com").replace(
     /\/$/,
     "",
   );

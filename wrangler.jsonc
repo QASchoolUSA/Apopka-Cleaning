@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "main": ".open-next/worker.js",
+  "main": "worker.ts",
   "name": "apopka-cleaning",
   "compatibility_date": "2026-07-15",
   "compatibility_flags": [
@@ -22,8 +22,17 @@
   "observability": {
     "enabled": true
   },
+  "triggers": {
+    "crons": ["*/5 * * * *"]
+  },
+  "kv_namespaces": [
+    {
+      "binding": "BOOKING_OUTBOX",
+      "id": "REPLACE_WITH_BOOKING_OUTBOX_KV_ID",
+      "preview_id": "REPLACE_WITH_BOOKING_OUTBOX_KV_PREVIEW_ID"
+    }
+  ],
   "vars": {
-    "BOOKING_BROOM_URL": "https://bookings.kedrik.com",
     "BOOKING_BROOM_SITE_SLUG": "apopka",
     "BOOKING_BROOM_API_KEY": "bb_apopka_dev_key"
   }
