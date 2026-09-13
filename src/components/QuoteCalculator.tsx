@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Check, ChevronRight } from "lucide-react";
 import { business, services, type ServiceSlug } from "@/lib/services";
 import {
@@ -11,6 +11,7 @@ import {
 } from "@/lib/pricing";
 import { Button } from "@/components/Button";
 import { cn } from "@/lib/utils";
+import { createSoftLeadTracker } from "@/lib/soft-lead";
 
 type Step = "calc" | "book" | "done";
 
@@ -22,6 +23,10 @@ export function QuoteCalculator({
   config?: PricingConfig;
 }) {
   const { addOns, frequencies } = config;
+  const softLead = useRef<ReturnType<typeof createSoftLeadTracker> | null>(null);
+  if (!softLead.current) {
+    softLead.current = createSoftLeadTracker();
+  }
   const [step, setStep] = useState<Step>("calc");
   const [serviceSlug, setServiceSlug] = useState<ServiceSlug>(defaultService);
   const [bedrooms, setBedrooms] = useState(3);
@@ -59,6 +64,50 @@ export function QuoteCalculator({
   const isCommercial =
     serviceSlug === "commercial" || serviceSlug === "office";
 
+  useEffect(() => {
+    const tracker = softLead.current;
+    return () => tracker?.dispose();
+  }, []);
+
+  useEffect(() => {
+    if (step === "done") return;
+    const freqLabel =
+      frequencies.find((f) => f.key === frequency)?.label ?? frequency;
+    softLead.current?.schedule({
+      customer_name: form.name || undefined,
+      email: form.email || undefined,
+      phone: form.phone || undefined,
+      address: form.address || undefined,
+      service_type: quote.service.name,
+      preferred_date: form.date || undefined,
+      notes: form.notes || undefined,
+      intent: "quote",
+      last_step: step,
+      property: {
+        bedrooms: isCommercial ? undefined : bedrooms,
+        bathrooms,
+        square_feet: sqFt,
+        home_type: quote.service.shortName,
+      },
+      quote: {
+        estimate: quote.total,
+        currency: "USD",
+        frequency: freqLabel,
+        payment_terms: "Due after cleaning is complete",
+      },
+    });
+  }, [
+    step,
+    form,
+    quote,
+    bedrooms,
+    bathrooms,
+    sqFt,
+    frequency,
+    frequencies,
+    isCommercial,
+  ]);
+
   function toggleAddOn(id: string) {
     setSelectedAddOns((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
@@ -84,6 +133,7 @@ export function QuoteCalculator({
           preferred_date: form.date,
           intent: "quote",
           notes: form.notes.trim() || undefined,
+          session_key: softLead.current?.sessionKey,
           property: {
             bedrooms: isCommercial ? undefined : bedrooms,
             bathrooms,
