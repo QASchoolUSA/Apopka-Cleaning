@@ -180,10 +180,13 @@ export const business = {
   name: "Apopka Cleaning",
   city: "Apopka, FL",
   url: "https://apopkacleaning.com",
-  phone: "(407) 555-0148",
-  phoneHref: "tel:+14075550148",
+  /** Empty until a real number is set — do not publish placeholders. */
+  phone: "",
+  phoneHref: "",
   email: "hello@apopkacleaning.com",
   emailHref: "mailto:hello@apopkacleaning.com",
   hours: "Mon–Sat · 8am–6pm",
   area: "Apopka & nearby Orange County",
 };
+
+export const hasPhone = Boolean(business.phone && business.phoneHref);

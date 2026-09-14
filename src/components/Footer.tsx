@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Mail, MapPin, Phone } from "lucide-react";
-import { business, services } from "@/lib/services";
+import { business, hasPhone, services } from "@/lib/services";
 
 export function Footer() {
   return (
@@ -50,15 +50,17 @@ export function Footer() {
               <MapPin className="mt-0.5 size-4 shrink-0 text-[var(--aqua)]" aria-hidden />
               <span>{business.city}</span>
             </li>
-            <li>
-              <a
-                href={business.phoneHref}
-                className="inline-flex cursor-pointer items-center gap-2.5 transition-colors duration-200 hover:text-white"
-              >
-                <Phone className="size-4 shrink-0 text-[var(--aqua)]" aria-hidden />
-                {business.phone}
-              </a>
-            </li>
+            {hasPhone && (
+              <li>
+                <a
+                  href={business.phoneHref}
+                  className="inline-flex cursor-pointer items-center gap-2.5 transition-colors duration-200 hover:text-white"
+                >
+                  <Phone className="size-4 shrink-0 text-[var(--aqua)]" aria-hidden />
+                  {business.phone}
+                </a>
+              </li>
+            )}
             <li>
               <a
                 href={business.emailHref}

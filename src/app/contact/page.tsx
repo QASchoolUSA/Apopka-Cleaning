@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { Button } from "@/components/Button";
 import { PageHero } from "@/components/PageHero";
-import { business } from "@/lib/services";
+import { business, hasPhone } from "@/lib/services";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -27,22 +27,24 @@ export default function ContactPage() {
               We&apos;re local to Apopka
             </h2>
             <p className="mt-4 text-[var(--muted-fg)] leading-relaxed">
-              Prefer to skip the form? Call or email and we&apos;ll help you pick the
-              right service and schedule.
+              Prefer to skip the form? Email us and we&apos;ll help you pick the right
+              service and schedule.
             </p>
             <ul className="mt-8 space-y-5">
-              <li className="flex gap-3">
-                <Phone className="mt-0.5 size-5 text-[var(--lagoon)]" aria-hidden />
-                <div>
-                  <p className="text-sm font-semibold text-[var(--lagoon-ink)]">Phone</p>
-                  <a
-                    href={business.phoneHref}
-                    className="cursor-pointer text-[var(--muted-fg)] transition-colors duration-200 hover:text-[var(--lagoon)]"
-                  >
-                    {business.phone}
-                  </a>
-                </div>
-              </li>
+              {hasPhone && (
+                <li className="flex gap-3">
+                  <Phone className="mt-0.5 size-5 text-[var(--lagoon)]" aria-hidden />
+                  <div>
+                    <p className="text-sm font-semibold text-[var(--lagoon-ink)]">Phone</p>
+                    <a
+                      href={business.phoneHref}
+                      className="cursor-pointer text-[var(--muted-fg)] transition-colors duration-200 hover:text-[var(--lagoon)]"
+                    >
+                      {business.phone}
+                    </a>
+                  </div>
+                </li>
+              )}
               <li className="flex gap-3">
                 <Mail className="mt-0.5 size-5 text-[var(--lagoon)]" aria-hidden />
                 <div>
@@ -84,8 +86,8 @@ export default function ContactPage() {
             <Button href="/quote" className="mt-6 w-full" variant="primary">
               Open quote calculator
             </Button>
-            <Button href="tel:+14075550148" className="mt-3 w-full" variant="outline">
-              Call {business.phone}
+            <Button href={business.emailHref} className="mt-3 w-full" variant="outline">
+              Email {business.email}
             </Button>
           </form>
         </div>

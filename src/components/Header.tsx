@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Menu, Phone, X } from "lucide-react";
-import { business, services } from "@/lib/services";
+import { Menu, Mail, Phone, X } from "lucide-react";
+import { business, hasPhone, services } from "@/lib/services";
 import { cn } from "@/lib/utils";
 
 const nav = [
@@ -77,13 +77,23 @@ export function Header() {
               </Link>
             ),
           )}
-          <a
-            href={business.phoneHref}
-            className="ml-2 inline-flex cursor-pointer items-center gap-2 rounded-full bg-[var(--aqua)] px-4 py-2.5 text-sm font-semibold text-[var(--lagoon-ink)] shadow-sm transition-transform duration-200 hover:scale-[1.02] hover:bg-[var(--aqua-bright)]"
-          >
-            <Phone className="size-4" aria-hidden />
-            Call now
-          </a>
+          {hasPhone ? (
+            <a
+              href={business.phoneHref}
+              className="ml-2 inline-flex cursor-pointer items-center gap-2 rounded-full bg-[var(--aqua)] px-4 py-2.5 text-sm font-semibold text-[var(--lagoon-ink)] shadow-sm transition-transform duration-200 hover:scale-[1.02] hover:bg-[var(--aqua-bright)]"
+            >
+              <Phone className="size-4" aria-hidden />
+              Call now
+            </a>
+          ) : (
+            <a
+              href={business.emailHref}
+              className="ml-2 inline-flex cursor-pointer items-center gap-2 rounded-full bg-[var(--aqua)] px-4 py-2.5 text-sm font-semibold text-[var(--lagoon-ink)] shadow-sm transition-transform duration-200 hover:scale-[1.02] hover:bg-[var(--aqua-bright)]"
+            >
+              <Mail className="size-4" aria-hidden />
+              Email us
+            </a>
+          )}
         </nav>
 
         <button
@@ -123,13 +133,23 @@ export function Header() {
                 {s.shortName}
               </Link>
             ))}
-            <a
-              href={business.phoneHref}
-              className="mt-4 inline-flex cursor-pointer items-center justify-center gap-2 rounded-full bg-[var(--aqua)] px-4 py-3 text-sm font-semibold text-[var(--lagoon-ink)]"
-            >
-              <Phone className="size-4" aria-hidden />
-              {business.phone}
-            </a>
+            {hasPhone ? (
+              <a
+                href={business.phoneHref}
+                className="mt-4 inline-flex cursor-pointer items-center justify-center gap-2 rounded-full bg-[var(--aqua)] px-4 py-3 text-sm font-semibold text-[var(--lagoon-ink)]"
+              >
+                <Phone className="size-4" aria-hidden />
+                {business.phone}
+              </a>
+            ) : (
+              <a
+                href={business.emailHref}
+                className="mt-4 inline-flex cursor-pointer items-center justify-center gap-2 rounded-full bg-[var(--aqua)] px-4 py-3 text-sm font-semibold text-[var(--lagoon-ink)]"
+              >
+                <Mail className="size-4" aria-hidden />
+                {business.email}
+              </a>
+            )}
           </nav>
         </div>
       )}

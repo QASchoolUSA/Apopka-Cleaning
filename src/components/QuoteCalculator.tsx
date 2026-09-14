@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Check, ChevronRight } from "lucide-react";
-import { business, services, type ServiceSlug } from "@/lib/services";
+import { business, hasPhone, services, type ServiceSlug } from "@/lib/services";
 import {
   DEFAULT_PRICING_CONFIG,
   calculateQuote,
@@ -183,14 +183,32 @@ export function QuoteCalculator({
           Thanks, {form.name || "there"}. We&apos;ll confirm your{" "}
           {quote.service.shortName.toLowerCase()} estimate of{" "}
           <strong className="text-[var(--lagoon)]">${quote.total}</strong> and
-          preferred date shortly. Prefer to talk now? Call{" "}
-          <a
-            href={business.phoneHref}
-            className="cursor-pointer font-semibold text-[var(--lagoon)] underline-offset-2 hover:underline"
-          >
-            {business.phone}
-          </a>
-          .
+          preferred date shortly.
+          {hasPhone ? (
+            <>
+              {" "}
+              Prefer to talk now? Call{" "}
+              <a
+                href={business.phoneHref}
+                className="cursor-pointer font-semibold text-[var(--lagoon)] underline-offset-2 hover:underline"
+              >
+                {business.phone}
+              </a>
+              .
+            </>
+          ) : (
+            <>
+              {" "}
+              Prefer email? Reach us at{" "}
+              <a
+                href={business.emailHref}
+                className="cursor-pointer font-semibold text-[var(--lagoon)] underline-offset-2 hover:underline"
+              >
+                {business.email}
+              </a>
+              .
+            </>
+          )}
         </p>
         <Button
           className="mt-8"
