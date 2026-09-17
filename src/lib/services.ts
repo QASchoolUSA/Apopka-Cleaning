@@ -24,9 +24,9 @@ export const services: Service[] = [
     slug: "residential",
     name: "Residential Cleaning",
     shortName: "Residential",
-    tagline: "Steady freshness for the home you live in every day.",
+    tagline: "Weekly or one-time house cleaning for Apopka homes.",
     description:
-      "Recurring or one-time house cleaning tailored to Apopka homes—kitchens, baths, floors, and living spaces left bright and ready.",
+      "Kitchens, baths, floors, and living spaces cleaned on a schedule that fits your week.",
     heroImage:
       "https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=2000&q=80",
     heroAlt: "Professional cleaner wiping a kitchen counter in a bright home",
@@ -49,9 +49,9 @@ export const services: Service[] = [
     slug: "deep-cleaning",
     name: "Deep Cleaning",
     shortName: "Deep Clean",
-    tagline: "A thorough reset for every corner that usually gets skipped.",
+    tagline: "Extra time for the corners weekly cleaning skips.",
     description:
-      "Detail-focused cleaning that reaches baseboards, inside appliances, and build-up in kitchens and baths—ideal seasonally or before big gatherings.",
+      "Baseboards, inside appliances, and kitchen and bath buildup — good seasonally or before guests.",
     heroImage:
       "https://images.unsplash.com/photo-1563453392212-326f5e854473?auto=format&fit=crop&w=2000&q=80",
     heroAlt: "Sparkling clean bathroom with fresh towels",
@@ -74,9 +74,9 @@ export const services: Service[] = [
     slug: "move-in-out",
     name: "Move-In / Move-Out Cleaning",
     shortName: "Move-In/Out",
-    tagline: "Leave keys with confidence—empty homes, spotless finish.",
+    tagline: "Empty-home cleans for landlords, tenants, and new owners.",
     description:
-      "Vacant-home cleans built for landlords, tenants, and new owners across Apopka and nearby Orange County communities.",
+      "Vacant-home cleaning across Apopka and nearby Orange County so keys change hands with a clean space.",
     heroImage:
       "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=80",
     heroAlt: "Bright empty living room ready for move-in",
@@ -99,9 +99,9 @@ export const services: Service[] = [
     slug: "commercial",
     name: "Commercial Cleaning",
     shortName: "Commercial",
-    tagline: "Clean spaces that support the work you do every day.",
+    tagline: "Retail, clinics, and light commercial spaces on your hours.",
     description:
-      "Reliable cleaning for retail, clinics, and light commercial spaces in Apopka—scheduled around your hours so business never stops.",
+      "Scheduled cleaning for Apopka businesses so the workday keeps moving.",
     heroImage:
       "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=2000&q=80",
     heroAlt: "Modern commercial office interior with clean floors",
@@ -124,9 +124,9 @@ export const services: Service[] = [
     slug: "office",
     name: "Office Cleaning",
     shortName: "Office",
-    tagline: "Desks, meeting rooms, and kitchens kept presentation-ready.",
+    tagline: "Desks, meeting rooms, and kitchens kept ready for work.",
     description:
-      "Nightly or weekly office cleans for Apopka teams who want a polished workplace without managing it themselves.",
+      "Nightly or weekly office cleans for Apopka teams who do not want to manage it themselves.",
     heroImage:
       "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=2000&q=80",
     heroAlt: "Clean modern open office workspace",
@@ -149,9 +149,9 @@ export const services: Service[] = [
     slug: "carpet-upholstery",
     name: "Carpet & Upholstery",
     shortName: "Carpet & Upholstery",
-    tagline: "Revive soft surfaces that vacuuming alone can’t refresh.",
+    tagline: "Carpet and upholstery cleaning beyond what vacuuming can do.",
     description:
-      "Targeted carpet and upholstery refresh for living rooms, offices, and high-traffic areas—removing soil so spaces feel lighter again.",
+      "Targeted refresh for living rooms, offices, and high-traffic areas that need more than a vacuum.",
     heroImage:
       "https://images.unsplash.com/photo-1558317374-067fb5f30001?auto=format&fit=crop&w=2000&q=80",
     heroAlt: "Freshly cleaned carpet in a sunny living room",

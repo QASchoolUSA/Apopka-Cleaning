@@ -241,8 +241,8 @@ export function QuoteCalculator({
                 Free quote calculator
               </h2>
               <p className="mt-2 text-sm text-[var(--muted-fg)]">
-                Instant estimate for Apopka-area cleans. Book in the next step—
-                no obligation.
+                Instant estimate for Apopka-area cleans. Book in the next step if it
+                looks right — no obligation.
               </p>
             </div>
 

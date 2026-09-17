@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     template: `%s | ${business.name}`,
   },
   description:
-    "Apopka Cleaning provides residential, deep clean, move-in/out, office, and commercial cleaning across Apopka, FL. Get a free quote and book online.",
+    "Local house and office cleaning in Apopka, FL. Free online quotes for residential, deep clean, move-out, and commercial work.",
 };
 
 export default function RootLayout({

@@ -18,8 +18,7 @@ export function Footer() {
             {business.name}
           </p>
           <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/70">
-            Professional residential and commercial cleaning for homes and
-            workplaces across {business.area}.
+            Residential and commercial cleaning across {business.area}.
           </p>
         </div>
 

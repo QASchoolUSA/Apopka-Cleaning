@@ -16,7 +16,7 @@ export default async function QuotePage() {
     <>
       <PageHero
         title="Get a free quote"
-        subtitle="Price your clean in minutes, then request a booking for your Apopka address."
+        subtitle="See your price in minutes, then book a visit for your Apopka address."
         image="https://images.unsplash.com/photo-1556911220-bff31c28b687?auto=format&fit=crop&w=2400&q=80"
         imageAlt="Bright organized kitchen ready after cleaning"
         primaryCta={{ label: "Jump to calculator", href: "#calculator" }}

@@ -14,7 +14,7 @@ export default function ContactPage() {
     <>
       <PageHero
         title="Contact us"
-        subtitle={`Reach the ${business.name} team—we're happy to talk through your space in ${business.city}.`}
+        subtitle="Questions about cleaning in Apopka? Email us or grab a free quote."
         image="https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=2400&q=80"
         imageAlt="Bright living room with natural Florida light"
         primaryCta={{ label: "Get a free quote", href: "/quote" }}
@@ -77,11 +77,11 @@ export default function ContactPage() {
             method="get"
           >
             <h3 className="font-[family-name:var(--font-display)] text-xl font-semibold text-[var(--lagoon-ink)]">
-              Fastest path: free quote
+              Or get a free quote
             </h3>
             <p className="mt-2 text-sm text-[var(--muted-fg)]">
               The calculator prices your clean and lets you request a booking in one
-              flow.
+              go.
             </p>
             <Button href="/quote" className="mt-6 w-full" variant="primary">
               Open quote calculator

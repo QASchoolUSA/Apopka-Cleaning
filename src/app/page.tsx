@@ -9,17 +9,17 @@ const proofs = [
   {
     icon: ShieldCheck,
     title: "Insured & vetted",
-    text: "Background-aware team you can trust in your home or workplace.",
+    text: "Background-checked team you can trust in your home or workplace.",
   },
   {
     icon: Sparkles,
-    title: "Fresh every visit",
-    text: "Clear checklists so kitchens, baths, and floors stay consistently clean.",
+    title: "Same checklist every visit",
+    text: "Kitchens, baths, and floors get the same thorough pass each time.",
   },
   {
     icon: Clock,
     title: "On your schedule",
-    text: "One-time resets or recurring visits that fit Apopka life.",
+    text: "One-time cleans or recurring visits that fit Apopka life.",
   },
 ];
 
@@ -28,8 +28,8 @@ export default function HomePage() {
     <>
       <PageHero
         brand
-        title="Homes and workplaces that feel freshly reset."
-        subtitle={`Local cleaning for ${business.city}—get an instant quote and book the visit that fits your space.`}
+        title="Local cleaning for Apopka homes and workplaces."
+        subtitle={`Get a free quote and book a visit that fits your space in ${business.city}.`}
         image="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=2400&q=80"
         imageAlt="Cleaner caring for a bright Florida kitchen"
         primaryCta={{ label: "Get a free quote", href: "/quote" }}
@@ -72,10 +72,10 @@ export default function HomePage() {
               What we clean
             </p>
             <h2 className="mt-3 font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--lagoon-ink)] md:text-4xl">
-              Services built for Apopka homes and businesses.
+              Cleaning for Apopka homes and businesses.
             </h2>
             <p className="mt-3 text-[var(--muted-fg)]">
-              Choose a service for details—or jump to the calculator for a free estimate
+              Pick a service for details, or jump to the calculator for a free estimate
               and booking.
             </p>
           </div>
@@ -121,11 +121,11 @@ export default function HomePage() {
         <div className="relative mx-auto flex max-w-6xl flex-col items-start gap-6 px-5 py-16 md:flex-row md:items-end md:justify-between md:px-8 md:py-24">
           <div className="max-w-xl">
             <h2 className="font-[family-name:var(--font-display)] text-3xl font-semibold md:text-4xl">
-              Know your price before we arrive.
+              See your price before we show up.
             </h2>
             <p className="mt-3 text-white/75">
-              Use the free quote calculator, then book a preferred date—we confirm the
-              details and show up ready.
+              Use the free quote calculator, then book a preferred date. We confirm the
+              details and arrive ready.
             </p>
           </div>
           <Button href="/quote" variant="primary">
