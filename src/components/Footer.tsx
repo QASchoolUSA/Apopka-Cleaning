@@ -2,6 +2,17 @@ import Link from "next/link";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { business, hasPhone, services } from "@/lib/services";
 
+const explore = [
+  { href: "/services", label: "All services" },
+  { href: "/guides", label: "Guides" },
+  {
+    href: "/guides/how-much-does-house-cleaning-cost-apopka-fl",
+    label: "House cleaning costs",
+  },
+  { href: "/quote", label: "Free quote" },
+  { href: "/contact", label: "Contact" },
+] as const;
+
 export function Footer() {
   return (
     <footer className="relative overflow-hidden border-t border-[var(--border)] bg-[var(--lagoon)] text-white">
@@ -12,7 +23,7 @@ export function Footer() {
             "radial-gradient(ellipse 60% 50% at 10% 100%, rgba(45, 212, 191, 0.25), transparent), radial-gradient(ellipse 40% 40% at 90% 0%, rgba(14, 116, 144, 0.35), transparent)",
         }}
       />
-      <div className="relative mx-auto grid max-w-6xl gap-10 px-5 py-14 md:grid-cols-3 md:px-8 md:py-16">
+      <div className="relative mx-auto grid max-w-6xl gap-10 px-5 py-14 md:grid-cols-4 md:px-8 md:py-16">
         <div>
           <p className="font-[family-name:var(--font-display)] text-2xl font-semibold tracking-tight">
             {business.name}
@@ -37,14 +48,24 @@ export function Footer() {
                 </Link>
               </li>
             ))}
-            <li>
-              <Link
-                href="/guides"
-                className="cursor-pointer text-sm text-white/75 transition-colors duration-200 hover:text-white"
-              >
-                Guides
-              </Link>
-            </li>
+          </ul>
+        </div>
+
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--aqua)]">
+            Explore
+          </p>
+          <ul className="mt-4 space-y-2">
+            {explore.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className="cursor-pointer text-sm text-white/75 transition-colors duration-200 hover:text-white"
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
 

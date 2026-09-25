@@ -113,6 +113,51 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="border-t border-[var(--border)] bg-white">
+        <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
+          <div className="max-w-xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--lagoon)]">
+              Local guides
+            </p>
+            <h2 className="mt-3 font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--lagoon-ink)] md:text-4xl">
+              Planning a clean in Apopka?
+            </h2>
+            <p className="mt-3 text-[var(--muted-fg)]">
+              Read our local pricing guide, then browse services or jump straight to a
+              free quote.
+            </p>
+          </div>
+          <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
+            <Link
+              href="/guides/how-much-does-house-cleaning-cost-apopka-fl"
+              className="group inline-flex max-w-xl flex-col rounded-2xl border border-[var(--border)] bg-[var(--mist)] px-6 py-5 transition-colors duration-200 hover:border-[var(--aqua)]"
+            >
+              <span className="font-[family-name:var(--font-display)] text-lg font-semibold text-[var(--lagoon-ink)]">
+                How much does house cleaning cost in Apopka?
+              </span>
+              <span className="mt-1 text-sm text-[var(--muted-fg)]">
+                2026 planning ranges by home size, deep vs maintenance, and what changes
+                the quote.
+              </span>
+              <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-[var(--lagoon)]">
+                Read the guide
+                <ArrowRight
+                  className="size-4 transition-transform duration-200 group-hover:translate-x-1"
+                  aria-hidden
+                />
+              </span>
+            </Link>
+            <Link
+              href="/guides"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--lagoon)] hover:underline"
+            >
+              All cleaning guides
+              <ArrowRight className="size-4" aria-hidden />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <section className="relative overflow-hidden bg-[var(--lagoon)] text-white">
         <div
           className="pointer-events-none absolute -right-20 top-0 h-80 w-80 rounded-full bg-[var(--aqua)]/20 blur-3xl"
