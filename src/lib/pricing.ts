@@ -1,133 +1,212 @@
 import { getService, type Service, type ServiceSlug } from "@/lib/services";
 
 /**
- * Every number this site charges. Booking Broom is the source of truth; the
- * values in `DEFAULT_PRICING_CONFIG` are what shipped and are used whenever the
- * dashboard cannot be reached, so a quote is never blocked on it.
+ * sqft-rate-min engine (Davenport pattern) with STANDARD rates.
+ * Booking Broom is the source of truth; DEFAULT_PRICING_CONFIG is the offline fallback.
  */
-export type ServiceRate = {
-  key: string;
-  /** Floor the discounted total can never fall below. */
-  startingAt: number;
-  baseRate: number;
-  perBedroom: number;
-  perBathroom: number;
-  perSqFt: number;
-};
+
+export type ServiceTypeId =
+  | "house"
+  | "apartment"
+  | "move"
+  | "airbnb"
+  | "post-construction"
+  | "maintenance"
+  | "deep";
+
+export type FrequencyId = "one-time" | "weekly" | "bi-weekly" | "monthly";
+
+export type AddonId =
+  | "kitchen-deep"
+  | "oven"
+  | "fridge"
+  | "windows-interior"
+  | "windows-exterior"
+  | "laundry"
+  | "cabinets"
+  | "garage"
+  | "balcony"
+  | "pets";
 
 export type PricingConfig = {
-  kind: "room-plus-sqft";
-  serviceRates: ServiceRate[];
-  /** Square footage included before perSqFt starts applying. */
-  freeSqFt: number;
+  kind: "sqft-rate-min";
+  serviceRates: { key: string; perSqft: number; minBase: number }[];
+  bedroomRate: number;
+  bathroomRate: number;
+  frequencyMultipliers: { key: string; label: string; multiplier: number }[];
   addOns: { key: string; label: string; price: number }[];
-  frequencies: { key: string; label: string; discount: number }[];
+  sqftPresets: { label: string; value: number }[];
+  minSqft: number;
+  maxSqft: number;
 };
 
 export const DEFAULT_PRICING_CONFIG: PricingConfig = {
-  kind: "room-plus-sqft",
+  kind: "sqft-rate-min",
   serviceRates: [
-    {
-      key: "residential",
-      startingAt: 129,
-      baseRate: 89,
-      perBedroom: 25,
-      perBathroom: 30,
-      perSqFt: 0.05,
-    },
-    {
-      key: "deep-cleaning",
-      startingAt: 249,
-      baseRate: 179,
-      perBedroom: 40,
-      perBathroom: 45,
-      perSqFt: 0.08,
-    },
-    {
-      key: "move-in-out",
-      startingAt: 299,
-      baseRate: 219,
-      perBedroom: 45,
-      perBathroom: 50,
-      perSqFt: 0.09,
-    },
-    {
-      key: "commercial",
-      startingAt: 199,
-      baseRate: 149,
-      perBedroom: 0,
-      perBathroom: 35,
-      perSqFt: 0.06,
-    },
-    {
-      key: "office",
-      startingAt: 159,
-      baseRate: 119,
-      perBedroom: 0,
-      perBathroom: 30,
-      perSqFt: 0.055,
-    },
-    {
-      key: "carpet-upholstery",
-      startingAt: 149,
-      baseRate: 99,
-      perBedroom: 35,
-      perBathroom: 0,
-      perSqFt: 0.12,
-    },
+    { key: "house", perSqft: 0.15, minBase: 129 },
+    { key: "apartment", perSqft: 0.15, minBase: 99 },
+    { key: "move", perSqft: 0.23, minBase: 189 },
+    { key: "airbnb", perSqft: 0.12, minBase: 149 },
+    { key: "post-construction", perSqft: 0.39, minBase: 249 },
+    { key: "maintenance", perSqft: 0.15, minBase: 109 },
+    { key: "deep", perSqft: 0.2, minBase: 199 },
   ],
-  freeSqFt: 800,
+  bedroomRate: 18,
+  bathroomRate: 28,
+  frequencyMultipliers: [
+    { key: "one-time", label: "One-time", multiplier: 1 },
+    { key: "weekly", label: "Weekly", multiplier: 0.85 },
+    { key: "bi-weekly", label: "Bi-weekly", multiplier: 0.9 },
+    { key: "monthly", label: "Monthly", multiplier: 0.95 },
+  ],
   addOns: [
-    { key: "fridge", label: "Inside fridge", price: 35 },
-    { key: "oven", label: "Inside oven", price: 35 },
-    { key: "windows", label: "Interior windows", price: 45 },
-    { key: "laundry", label: "Laundry (1 load)", price: 25 },
-    { key: "blinds", label: "Blinds dusted", price: 30 },
-    { key: "garage", label: "Garage sweep", price: 40 },
+    { key: "kitchen-deep", label: "Kitchen deep clean", price: 45 },
+    { key: "oven", label: "Oven cleaning", price: 35 },
+    { key: "fridge", label: "Fridge cleaning", price: 35 },
+    { key: "windows-interior", label: "Windows (interior)", price: 40 },
+    { key: "windows-exterior", label: "Windows (exterior)", price: 55 },
+    { key: "laundry", label: "Laundry fold & put away", price: 25 },
+    { key: "cabinets", label: "Inside cabinets", price: 40 },
+    { key: "garage", label: "Garage sweep & wipe", price: 50 },
+    { key: "balcony", label: "Patio / balcony", price: 30 },
+    { key: "pets", label: "Pet-friendly detail", price: 20 },
   ],
-  frequencies: [
-    { key: "one-time", label: "One-time", discount: 0 },
-    { key: "weekly", label: "Weekly", discount: 0.2 },
-    { key: "biweekly", label: "Biweekly", discount: 0.15 },
-    { key: "monthly", label: "Monthly", discount: 0.1 },
+  sqftPresets: [
+    { label: "Under 800 sq ft", value: 600 },
+    { label: "800\u20131,200 sq ft", value: 1000 },
+    { label: "1,200\u20132,000 sq ft", value: 1600 },
+    { label: "2,000\u20132,600 sq ft", value: 2200 },
+    { label: "2,600+ sq ft", value: 3000 },
   ],
+  minSqft: 400,
+  maxSqft: 6000,
 };
 
-export type Frequency = string;
+/** Marketing page slugs → unified BB service keys. */
+export const SERVICE_SLUG_TO_TYPE: Record<ServiceSlug, ServiceTypeId> = {
+  residential: "house",
+  "deep-cleaning": "deep",
+  "move-in-out": "move",
+  commercial: "house",
+  office: "apartment",
+  "carpet-upholstery": "house",
+};
 
-/**
- * Guards against a remote config that parses as JSON but has no rate for a
- * service the site sells, which would otherwise quote that service at $0.
- */
+const SERVICE_TYPE_IDS: ServiceTypeId[] = [
+  "house",
+  "apartment",
+  "move",
+  "airbnb",
+  "post-construction",
+  "maintenance",
+  "deep",
+];
+
+const ADDON_IDS: AddonId[] = [
+  "kitchen-deep",
+  "oven",
+  "fridge",
+  "windows-interior",
+  "windows-exterior",
+  "laundry",
+  "cabinets",
+  "garage",
+  "balcony",
+  "pets",
+];
+
+const FREQUENCY_IDS: FrequencyId[] = [
+  "one-time",
+  "weekly",
+  "bi-weekly",
+  "monthly",
+];
+
+export type Frequency = FrequencyId | string;
+
 export function isUsablePricingConfig(value: unknown): value is PricingConfig {
   if (!value || typeof value !== "object") return false;
   const config = value as Partial<PricingConfig>;
-  if (config.kind !== "room-plus-sqft") return false;
-  if (typeof config.freeSqFt !== "number") return false;
-  if (!Array.isArray(config.addOns) || config.addOns.length === 0) return false;
-  if (!Array.isArray(config.frequencies) || config.frequencies.length === 0) {
+  if (config.kind !== "sqft-rate-min") return false;
+  if (typeof config.bedroomRate !== "number") return false;
+  if (typeof config.bathroomRate !== "number") return false;
+  if (typeof config.minSqft !== "number") return false;
+  if (typeof config.maxSqft !== "number") return false;
+  if (!Array.isArray(config.sqftPresets) || config.sqftPresets.length === 0) {
     return false;
   }
   if (!Array.isArray(config.serviceRates)) return false;
+  if (!Array.isArray(config.frequencyMultipliers)) return false;
+  if (!Array.isArray(config.addOns)) return false;
 
-  return DEFAULT_PRICING_CONFIG.serviceRates.every((shipped) =>
-    config.serviceRates!.some((rate) => rate.key === shipped.key)
+  return (
+    SERVICE_TYPE_IDS.every((id) =>
+      config.serviceRates!.some((rate) => rate.key === id),
+    ) &&
+    FREQUENCY_IDS.every((id) =>
+      config.frequencyMultipliers!.some((freq) => freq.key === id),
+    ) &&
+    ADDON_IDS.every((id) => config.addOns!.some((addOn) => addOn.key === id))
   );
 }
 
-export function rateFor(
-  slug: ServiceSlug,
-  config: PricingConfig = DEFAULT_PRICING_CONFIG
-): ServiceRate | undefined {
-  return config.serviceRates.find((rate) => rate.key === slug);
+function normalizeFrequency(key: string): FrequencyId {
+  if (key === "biweekly") return "bi-weekly";
+  if ((FREQUENCY_IDS as string[]).includes(key)) return key as FrequencyId;
+  return "one-time";
 }
 
-/** The "from $X" figure published on service pages. */
+export function calculatePrice(
+  input: {
+    serviceType: ServiceTypeId;
+    sqft: number;
+    bedrooms: number;
+    bathrooms: number;
+    frequency: FrequencyId;
+    addons: string[];
+  },
+  config: PricingConfig = DEFAULT_PRICING_CONFIG,
+) {
+  const sqft = Math.max(config.minSqft, Math.min(config.maxSqft, input.sqft));
+  const bedrooms = Math.max(0, Math.min(8, input.bedrooms));
+  const bathrooms = Math.max(1, Math.min(8, input.bathrooms));
+
+  const rate = config.serviceRates.find((r) => r.key === input.serviceType);
+  const rawBase = sqft * (rate?.perSqft ?? 0);
+  const base = Math.max(rate?.minBase ?? 0, Math.round(rawBase));
+  const bedroomCost = bedrooms * config.bedroomRate;
+  const bathroomCost = bathrooms * config.bathroomRate;
+  const addonCost = input.addons.reduce((sum, id) => {
+    const addOn = config.addOns.find((a) => a.key === id);
+    return sum + (addOn?.price ?? 0);
+  }, 0);
+
+  const subtotal = base + bedroomCost + bathroomCost + addonCost;
+  const frequencyMultiplier =
+    config.frequencyMultipliers.find((f) => f.key === input.frequency)
+      ?.multiplier ?? 1;
+  const total = Math.round(subtotal * frequencyMultiplier);
+  const frequencyDiscount = Math.round(subtotal - total);
+
+  return {
+    base,
+    bedrooms: bedroomCost,
+    bathrooms: bathroomCost,
+    addons: addonCost,
+    subtotal,
+    frequencyMultiplier,
+    frequencyDiscount,
+    total,
+  };
+}
+
+/** Published "from $X" on service cards (maps marketing slug → minBase). */
 export function startingAt(
   slug: ServiceSlug,
-  config: PricingConfig = DEFAULT_PRICING_CONFIG
+  config: PricingConfig = DEFAULT_PRICING_CONFIG,
 ): number {
-  return rateFor(slug, config)?.startingAt ?? 0;
+  const type = SERVICE_SLUG_TO_TYPE[slug];
+  return config.serviceRates.find((r) => r.key === type)?.minBase ?? 0;
 }
 
 export type QuoteInput = {
@@ -139,9 +218,10 @@ export type QuoteInput = {
   addOnIds: string[];
 };
 
+/** Site calculator adapter over sqft-rate-min. */
 export function calculateQuote(
   input: QuoteInput,
-  config: PricingConfig = DEFAULT_PRICING_CONFIG
+  config: PricingConfig = DEFAULT_PRICING_CONFIG,
 ): {
   subtotal: number;
   discount: number;
@@ -153,26 +233,22 @@ export function calculateQuote(
     throw new Error("Unknown service");
   }
 
-  const rate = rateFor(input.serviceSlug, config);
-  if (!rate) {
-    throw new Error(`No pricing for service "${input.serviceSlug}"`);
-  }
+  const breakdown = calculatePrice(
+    {
+      serviceType: SERVICE_SLUG_TO_TYPE[input.serviceSlug],
+      sqft: input.sqFt,
+      bedrooms: input.bedrooms,
+      bathrooms: Math.max(1, input.bathrooms),
+      frequency: normalizeFrequency(input.frequency),
+      addons: input.addOnIds,
+    },
+    config,
+  );
 
-  const roomCost =
-    rate.baseRate +
-    input.bedrooms * rate.perBedroom +
-    input.bathrooms * rate.perBathroom +
-    Math.max(0, input.sqFt - config.freeSqFt) * rate.perSqFt;
-
-  const addOnCost = input.addOnIds.reduce((sum, id) => {
-    const addOn = config.addOns.find((a) => a.key === id);
-    return sum + (addOn?.price ?? 0);
-  }, 0);
-
-  const subtotal = Math.round(roomCost + addOnCost);
-  const freq = config.frequencies.find((f) => f.key === input.frequency);
-  const discount = Math.round(subtotal * (freq?.discount ?? 0));
-  const total = Math.max(subtotal - discount, rate.startingAt);
-
-  return { subtotal, discount, total, service };
+  return {
+    subtotal: breakdown.subtotal,
+    discount: breakdown.frequencyDiscount,
+    total: breakdown.total,
+    service,
+  };
 }

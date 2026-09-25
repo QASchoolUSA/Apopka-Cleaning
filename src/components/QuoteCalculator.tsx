@@ -22,7 +22,7 @@ export function QuoteCalculator({
   defaultService?: ServiceSlug;
   config?: PricingConfig;
 }) {
-  const { addOns, frequencies } = config;
+  const { addOns, frequencyMultipliers } = config;
   const softLead = useRef<ReturnType<typeof createSoftLeadTracker> | null>(null);
   if (!softLead.current) {
     softLead.current = createSoftLeadTracker();
@@ -32,7 +32,7 @@ export function QuoteCalculator({
   const [bedrooms, setBedrooms] = useState(3);
   const [bathrooms, setBathrooms] = useState(2);
   const [sqFt, setSqFt] = useState(1500);
-  const [frequency, setFrequency] = useState<Frequency>("biweekly");
+  const [frequency, setFrequency] = useState<Frequency>("bi-weekly");
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
   const [form, setForm] = useState({
     name: "",
@@ -72,7 +72,7 @@ export function QuoteCalculator({
   useEffect(() => {
     if (step === "done") return;
     const freqLabel =
-      frequencies.find((f) => f.key === frequency)?.label ?? frequency;
+      frequencyMultipliers.find((f) => f.key === frequency)?.label ?? frequency;
     softLead.current?.schedule({
       customer_name: form.name || undefined,
       email: form.email || undefined,
@@ -104,7 +104,7 @@ export function QuoteCalculator({
     bathrooms,
     sqFt,
     frequency,
-    frequencies,
+    frequencyMultipliers,
     isCommercial,
   ]);
 
@@ -120,7 +120,8 @@ export function QuoteCalculator({
     setSubmitting(true);
     try {
       const freqLabel =
-        frequencies.find((f) => f.key === frequency)?.label ?? frequency;
+        frequencyMultipliers.find((f) => f.key === frequency)?.label ??
+        frequency;
       const res = await fetch("/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -332,26 +333,29 @@ export function QuoteCalculator({
                 How often?
               </legend>
               <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
-                {frequencies.map((f) => (
-                  <button
-                    key={f.key}
-                    type="button"
-                    onClick={() => setFrequency(f.key)}
-                    className={cn(
-                      "cursor-pointer rounded-xl border px-3 py-3 text-center text-sm font-medium transition-all duration-200",
-                      frequency === f.key
-                        ? "border-[var(--aqua)] bg-[var(--aqua-soft)] text-[var(--lagoon-ink)]"
-                        : "border-[var(--border)] text-[var(--muted-fg)] hover:border-[var(--lagoon)]/30",
-                    )}
-                  >
-                    {f.label}
-                    {f.discount > 0 && (
-                      <span className="mt-0.5 block text-[10px] font-normal text-[var(--lagoon)]">
-                        Save {Math.round(f.discount * 100)}%
-                      </span>
-                    )}
-                  </button>
-                ))}
+                {frequencyMultipliers.map((f) => {
+                  const savePct = Math.round((1 - f.multiplier) * 100);
+                  return (
+                    <button
+                      key={f.key}
+                      type="button"
+                      onClick={() => setFrequency(f.key)}
+                      className={cn(
+                        "cursor-pointer rounded-xl border px-3 py-3 text-center text-sm font-medium transition-all duration-200",
+                        frequency === f.key
+                          ? "border-[var(--aqua)] bg-[var(--aqua-soft)] text-[var(--lagoon-ink)]"
+                          : "border-[var(--border)] text-[var(--muted-fg)] hover:border-[var(--lagoon)]/30",
+                      )}
+                    >
+                      {f.label}
+                      {savePct > 0 && (
+                        <span className="mt-0.5 block text-[10px] font-normal text-[var(--lagoon)]">
+                          Save {savePct}%
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             </fieldset>
 
@@ -409,7 +413,7 @@ export function QuoteCalculator({
                 Estimated total{" "}
                 <strong className="text-[var(--lagoon)]">${quote.total}</strong>{" "}
                 · {quote.service.shortName} ·{" "}
-                {frequencies.find((f) => f.key === frequency)?.label}
+                {frequencyMultipliers.find((f) => f.key === frequency)?.label}
               </p>
             </div>
 
@@ -492,12 +496,12 @@ export function QuoteCalculator({
           ${quote.total}
         </p>
         <p className="mt-1 text-sm text-white/65">
-          {frequencies.find((f) => f.key === frequency)?.label} ·{" "}
+          {frequencyMultipliers.find((f) => f.key === frequency)?.label} ·{" "}
           {quote.service.shortName}
         </p>
 
         <dl className="mt-8 space-y-3 border-t border-white/15 pt-6 text-sm">
-          <Row label="Base package" value={`$${quote.subtotal + quote.discount}`} />
+          <Row label="Base package" value={`$${quote.subtotal}`} />
           {quote.discount > 0 && (
             <Row label="Recurring discount" value={`−$${quote.discount}`} />
           )}
