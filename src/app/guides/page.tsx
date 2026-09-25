@@ -72,6 +72,7 @@ export default function GuidesIndexPage() {
         image="https://images.unsplash.com/photo-1628177142898-93e36e4e3a50?auto=format&fit=crop&w=2400&q=80"
         imageAlt="Cleaning supplies arranged neatly on a surface"
         primaryCta={{ label: "Get a free quote", href: "/quote" }}
+        secondaryCta={{ label: "Browse services", href: "/services" }}
       />
 
       <section className="mist-wash">

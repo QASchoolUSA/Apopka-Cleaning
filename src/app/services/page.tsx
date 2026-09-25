@@ -69,6 +69,38 @@ export default async function ServicesPage() {
           ))}
         </div>
       </section>
+
+      <section className="border-t border-[var(--border)] mist-wash">
+        <div className="mx-auto max-w-6xl px-5 py-12 md:px-8 md:py-16">
+          <h2 className="font-[family-name:var(--font-display)] text-2xl font-semibold text-[var(--lagoon-ink)]">
+            Compare pricing before you book
+          </h2>
+          <p className="mt-3 max-w-2xl text-[var(--muted-fg)]">
+            Not sure whether you need a maintenance visit or a deep clean? Our Apopka
+            cost guide covers typical ranges by home size, then you can{" "}
+            <Link href="/quote" className="font-semibold text-[var(--lagoon)] hover:underline">
+              get a free quote
+            </Link>{" "}
+            for your address.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-4">
+            <Link
+              href="/guides/how-much-does-house-cleaning-cost-apopka-fl"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--lagoon)] hover:underline"
+            >
+              House cleaning costs in Apopka
+              <ArrowRight className="size-4" aria-hidden />
+            </Link>
+            <Link
+              href="/guides"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--lagoon)] hover:underline"
+            >
+              All guides
+              <ArrowRight className="size-4" aria-hidden />
+            </Link>
+          </div>
+        </div>
+      </section>
     </>
   );
 }
