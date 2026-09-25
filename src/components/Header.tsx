@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 const nav = [
   { href: "/", label: "Home" },
   { href: "/services", label: "Services" },
+  { href: "/guides", label: "Guides" },
   { href: "/quote", label: "Get a Quote" },
   { href: "/contact", label: "Contact" },
 ];
@@ -70,7 +71,9 @@ export function Header() {
                 href={item.href}
                 className={cn(
                   "cursor-pointer rounded-md px-3 py-2 text-sm font-medium text-white/90 transition-colors duration-200 hover:bg-white/10 hover:text-white",
-                  pathname === item.href && "bg-white/10 text-white",
+                  (pathname === item.href ||
+                    (item.href !== "/" && pathname.startsWith(item.href))) &&
+                    "bg-white/10 text-white",
                 )}
               >
                 {item.label}

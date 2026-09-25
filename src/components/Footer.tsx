@@ -37,6 +37,14 @@ export function Footer() {
                 </Link>
               </li>
             ))}
+            <li>
+              <Link
+                href="/guides"
+                className="cursor-pointer text-sm text-white/75 transition-colors duration-200 hover:text-white"
+              >
+                Guides
+              </Link>
+            </li>
           </ul>
         </div>
 
