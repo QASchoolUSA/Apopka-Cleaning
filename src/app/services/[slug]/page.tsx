@@ -52,7 +52,10 @@ export default async function ServiceDetailPage({ params }: Props) {
   const config = await getPricingConfig();
   const faqs = serviceFaqs(service);
   const showCostGuide =
-    service.slug === "residential" || service.slug === "deep-cleaning";
+    service.slug === "residential" ||
+    service.slug === "deep-cleaning" ||
+    service.slug === "move-in-out" ||
+    service.slug === "carpet-upholstery";
 
   const breadcrumb = {
     "@context": "https://schema.org",
@@ -141,6 +144,21 @@ export default async function ServiceDetailPage({ params }: Props) {
               {business.area}, with clear scopes so you know what to expect before
               we arrive.
             </p>
+            <p className="mt-4 max-w-xl text-[var(--muted-fg)] leading-relaxed">
+              {service.detail}
+            </p>
+            {showCostGuide && (
+              <p className="mt-4 max-w-xl text-sm text-[var(--muted-fg)]">
+                Planning ranges:{" "}
+                <Link
+                  href={COST_GUIDE}
+                  className="font-semibold text-[var(--lagoon)] hover:underline"
+                >
+                  Apopka house cleaning cost guide
+                </Link>
+                .
+              </p>
+            )}
             <ul className="mt-8 space-y-3">
               {service.includes.map((item) => (
                 <li key={item} className="flex gap-3 text-[var(--lagoon-ink)]">

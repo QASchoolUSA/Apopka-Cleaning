@@ -65,6 +65,42 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="border-b border-[var(--border)] bg-white">
+        <div className="mx-auto max-w-6xl px-5 py-10 md:px-8 md:py-12">
+          <p className="max-w-3xl text-[var(--muted-fg)] leading-relaxed">
+            Start with our{" "}
+            <Link
+              href="/services"
+              className="font-semibold text-[var(--lagoon)] hover:underline"
+            >
+              cleaning services
+            </Link>{" "}
+            hub, read the{" "}
+            <Link
+              href="/guides/how-much-does-house-cleaning-cost-apopka-fl"
+              className="font-semibold text-[var(--lagoon)] hover:underline"
+            >
+              Apopka house cleaning cost guide
+            </Link>
+            , or browse{" "}
+            <Link
+              href="/guides"
+              className="font-semibold text-[var(--lagoon)] hover:underline"
+            >
+              all guides
+            </Link>
+            . Prefer email?{" "}
+            <Link
+              href="/contact"
+              className="font-semibold text-[var(--lagoon)] hover:underline"
+            >
+              Contact us
+            </Link>{" "}
+            after you pick a scope.
+          </p>
+        </div>
+      </section>
+
       <section className="bg-white">
         <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
           <div className="max-w-xl">
@@ -75,8 +111,14 @@ export default function HomePage() {
               Cleaning for Apopka homes and businesses.
             </h2>
             <p className="mt-3 text-[var(--muted-fg)]">
-              Pick a service for details, or jump to the calculator for a free estimate
-              and booking.
+              Open any service leaf below, or go to the{" "}
+              <Link
+                href="/services"
+                className="font-semibold text-[var(--lagoon)] hover:underline"
+              >
+                full services list
+              </Link>{" "}
+              for side-by-side scopes and starting prices.
             </p>
           </div>
 
@@ -110,6 +152,28 @@ export default function HomePage() {
               </Link>
             ))}
           </div>
+
+          <ul className="mt-10 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[var(--muted-fg)]">
+            {services.map((service) => (
+              <li key={`text-${service.slug}`}>
+                <Link
+                  href={`/services/${service.slug}`}
+                  className="font-semibold text-[var(--lagoon)] hover:underline"
+                >
+                  {service.name}
+                </Link>
+              </li>
+            ))}
+            <li>
+              <Link
+                href="/services"
+                className="inline-flex items-center gap-1 font-semibold text-[var(--lagoon)] hover:underline"
+              >
+                All services
+                <ArrowRight className="size-3.5" aria-hidden />
+              </Link>
+            </li>
+          </ul>
         </div>
       </section>
 
@@ -123,8 +187,21 @@ export default function HomePage() {
               Planning a clean in Apopka?
             </h2>
             <p className="mt-3 text-[var(--muted-fg)]">
-              Read our local pricing guide, then browse services or jump straight to a
-              free quote.
+              The cost guide explains maintenance vs deep clean ranges. Then pick{" "}
+              <Link
+                href="/services/residential"
+                className="font-semibold text-[var(--lagoon)] hover:underline"
+              >
+                residential
+              </Link>
+              ,{" "}
+              <Link
+                href="/services/deep-cleaning"
+                className="font-semibold text-[var(--lagoon)] hover:underline"
+              >
+                deep cleaning
+              </Link>
+              , or another service and request a free quote.
             </p>
           </div>
           <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
@@ -147,13 +224,22 @@ export default function HomePage() {
                 />
               </span>
             </Link>
-            <Link
-              href="/guides"
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--lagoon)] hover:underline"
-            >
-              All cleaning guides
-              <ArrowRight className="size-4" aria-hidden />
-            </Link>
+            <div className="flex flex-col gap-3">
+              <Link
+                href="/guides"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--lagoon)] hover:underline"
+              >
+                All cleaning guides
+                <ArrowRight className="size-4" aria-hidden />
+              </Link>
+              <Link
+                href="/services"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--lagoon)] hover:underline"
+              >
+                Browse services hub
+                <ArrowRight className="size-4" aria-hidden />
+              </Link>
+            </div>
           </div>
         </div>
       </section>

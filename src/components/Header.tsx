@@ -19,6 +19,15 @@ export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
+  const [guidesOpen, setGuidesOpen] = useState(false);
+
+  const guideLinks = [
+    { href: "/guides", label: "All guides" },
+    {
+      href: "/guides/how-much-does-house-cleaning-cost-apopka-fl",
+      label: "House cleaning costs",
+    },
+  ] as const;
 
   return (
     <header className="absolute inset-x-0 top-0 z-50">
@@ -59,6 +68,38 @@ export function Header() {
                           className="block cursor-pointer rounded-lg px-3 py-2.5 text-sm text-white/90 transition-colors duration-200 hover:bg-white/10 hover:text-white"
                         >
                           {s.shortName}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : item.href === "/guides" ? (
+              <div
+                key={item.href}
+                className="relative"
+                onMouseEnter={() => setGuidesOpen(true)}
+                onMouseLeave={() => setGuidesOpen(false)}
+              >
+                <Link
+                  href={item.href}
+                  className={cn(
+                    "cursor-pointer rounded-md px-3 py-2 text-sm font-medium text-white/90 transition-colors duration-200 hover:bg-white/10 hover:text-white",
+                    pathname.startsWith("/guides") && "bg-white/10 text-white",
+                  )}
+                >
+                  {item.label}
+                </Link>
+                {guidesOpen && (
+                  <div className="absolute left-0 top-full pt-2">
+                    <div className="min-w-[240px] rounded-xl border border-white/15 bg-[var(--lagoon)]/95 p-2 shadow-xl backdrop-blur-md">
+                      {guideLinks.map((g) => (
+                        <Link
+                          key={g.href}
+                          href={g.href}
+                          className="block cursor-pointer rounded-lg px-3 py-2.5 text-sm text-white/90 transition-colors duration-200 hover:bg-white/10 hover:text-white"
+                        >
+                          {g.label}
                         </Link>
                       ))}
                     </div>
@@ -134,6 +175,19 @@ export function Header() {
                 onClick={() => setOpen(false)}
               >
                 {s.shortName}
+              </Link>
+            ))}
+            <p className="mt-3 px-3 text-xs font-semibold uppercase tracking-wider text-white/50">
+              Guides
+            </p>
+            {guideLinks.map((g) => (
+              <Link
+                key={g.href}
+                href={g.href}
+                className="cursor-pointer rounded-lg px-3 py-2.5 text-sm text-white/85"
+                onClick={() => setOpen(false)}
+              >
+                {g.label}
               </Link>
             ))}
             {hasPhone ? (
