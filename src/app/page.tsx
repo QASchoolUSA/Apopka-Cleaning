@@ -1,9 +1,16 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Clock, ShieldCheck, Sparkles } from "lucide-react";
 import { Button } from "@/components/Button";
 import { PageHero } from "@/components/PageHero";
 import { business, services } from "@/lib/services";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: `${business.url}/`,
+  },
+};
 
 const proofs = [
   {
@@ -24,8 +31,96 @@ const proofs = [
 ];
 
 export default function HomePage() {
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": ["CleaningService", "LocalBusiness"],
+    "@id": `${business.url}/#organization`,
+    name: business.name,
+    url: `${business.url}/`,
+    email: business.email,
+    priceRange: "$$",
+    image:
+      "https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=2400&q=80",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Apopka",
+      addressRegion: "FL",
+      postalCode: "32703",
+      addressCountry: "US",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 28.6778,
+      longitude: -81.5115,
+    },
+    areaServed: [
+      {
+        "@type": "City",
+        name: "Apopka",
+        sameAs: "https://en.wikipedia.org/wiki/Apopka,_Florida",
+      },
+      { "@type": "Place", name: "Hunt Club" },
+      { "@type": "Place", name: "Rock Springs" },
+      { "@type": "Place", name: "Errol Estate" },
+      { "@type": "Place", name: "Piedmont" },
+      { "@type": "Place", name: "Wekiwa Springs" },
+      { "@type": "AdministrativeArea", name: "Orange County, FL" },
+    ],
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+        ],
+        opens: "08:00",
+        closes: "18:00",
+      },
+    ],
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Professional Cleaning Services",
+      itemListElement: services.map((s, index) => ({
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: s.name,
+          description: s.description,
+          url: `${business.url}/services/${s.slug}`,
+        },
+        position: index + 1,
+      })),
+    },
+  };
+
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${business.url}/#website`,
+    url: `${business.url}/`,
+    name: business.name,
+    description:
+      "Professional residential and commercial cleaning services in Apopka, FL.",
+    publisher: {
+      "@id": `${business.url}/#organization`,
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+      />
+
       <PageHero
         brand
         title="Local cleaning for Apopka homes and workplaces."

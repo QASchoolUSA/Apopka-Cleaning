@@ -61,7 +61,7 @@ const faqs = [
 export default function HouseCleaningCostApopkaGuidePage() {
   const articleSchema = {
     "@context": "https://schema.org",
-    "@type": "TechArticle",
+    "@type": "Article",
     "@id": `${CANONICAL}#article`,
     headline: "How Much Does House Cleaning Cost in Apopka, FL? (2026)",
     description:

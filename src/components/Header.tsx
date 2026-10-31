@@ -58,21 +58,26 @@ export function Header() {
                 >
                   {item.label}
                 </Link>
-                {servicesOpen && (
-                  <div className="absolute left-0 top-full pt-2">
-                    <div className="min-w-[240px] rounded-xl border border-white/15 bg-[var(--lagoon)]/95 p-2 shadow-xl backdrop-blur-md">
-                      {services.map((s) => (
-                        <Link
-                          key={s.slug}
-                          href={`/services/${s.slug}`}
-                          className="block cursor-pointer rounded-lg px-3 py-2.5 text-sm text-white/90 transition-colors duration-200 hover:bg-white/10 hover:text-white"
-                        >
-                          {s.shortName}
-                        </Link>
-                      ))}
-                    </div>
+                <div
+                  className={cn(
+                    "absolute left-0 top-full pt-2 transition-all duration-200",
+                    servicesOpen
+                      ? "opacity-100 visible pointer-events-auto"
+                      : "opacity-0 invisible pointer-events-none",
+                  )}
+                >
+                  <div className="min-w-[240px] rounded-xl border border-white/15 bg-[var(--lagoon)]/95 p-2 shadow-xl backdrop-blur-md">
+                    {services.map((s) => (
+                      <Link
+                        key={s.slug}
+                        href={`/services/${s.slug}`}
+                        className="block cursor-pointer rounded-lg px-3 py-2.5 text-sm text-white/90 transition-colors duration-200 hover:bg-white/10 hover:text-white"
+                      >
+                        {s.shortName}
+                      </Link>
+                    ))}
                   </div>
-                )}
+                </div>
               </div>
             ) : item.href === "/guides" ? (
               <div
@@ -90,21 +95,26 @@ export function Header() {
                 >
                   {item.label}
                 </Link>
-                {guidesOpen && (
-                  <div className="absolute left-0 top-full pt-2">
-                    <div className="min-w-[240px] rounded-xl border border-white/15 bg-[var(--lagoon)]/95 p-2 shadow-xl backdrop-blur-md">
-                      {guideLinks.map((g) => (
-                        <Link
-                          key={g.href}
-                          href={g.href}
-                          className="block cursor-pointer rounded-lg px-3 py-2.5 text-sm text-white/90 transition-colors duration-200 hover:bg-white/10 hover:text-white"
-                        >
-                          {g.label}
-                        </Link>
-                      ))}
-                    </div>
+                <div
+                  className={cn(
+                    "absolute left-0 top-full pt-2 transition-all duration-200",
+                    guidesOpen
+                      ? "opacity-100 visible pointer-events-auto"
+                      : "opacity-0 invisible pointer-events-none",
+                  )}
+                >
+                  <div className="min-w-[240px] rounded-xl border border-white/15 bg-[var(--lagoon)]/95 p-2 shadow-xl backdrop-blur-md">
+                    {guideLinks.map((g) => (
+                      <Link
+                        key={g.href}
+                        href={g.href}
+                        className="block cursor-pointer rounded-lg px-3 py-2.5 text-sm text-white/90 transition-colors duration-200 hover:bg-white/10 hover:text-white"
+                      >
+                        {g.label}
+                      </Link>
+                    ))}
                   </div>
-                )}
+                </div>
               </div>
             ) : (
               <Link

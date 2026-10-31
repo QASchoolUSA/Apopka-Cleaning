@@ -29,15 +29,23 @@ const faqs = [
 export default function ContactPage() {
   const localBusiness = {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
+    "@type": ["CleaningService", "LocalBusiness"],
+    "@id": `${business.url}/#organization`,
     name: business.name,
-    url: business.url,
+    url: `${business.url}/`,
     email: business.email,
+    priceRange: "$$",
     address: {
       "@type": "PostalAddress",
       addressLocality: "Apopka",
       addressRegion: "FL",
+      postalCode: "32703",
       addressCountry: "US",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 28.6778,
+      longitude: -81.5115,
     },
     areaServed: business.area,
     openingHours: "Mo-Sa 08:00-18:00",

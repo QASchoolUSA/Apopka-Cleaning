@@ -25,6 +25,46 @@ export const metadata: Metadata = {
   },
   description:
     "Local house and office cleaning in Apopka, FL. Free online quotes for residential, deep clean, move-out, and commercial work.",
+  alternates: {
+    canonical: "./",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  openGraph: {
+    title: `${business.name} | Professional Cleaning in Apopka, FL`,
+    description:
+      "Local house and office cleaning in Apopka, FL. Free online quotes for residential, deep clean, move-out, and commercial work.",
+    url: business.url,
+    siteName: business.name,
+    locale: "en_US",
+    type: "website",
+    images: [
+      {
+        url: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=1200&q=80",
+        width: 1200,
+        height: 630,
+        alt: `${business.name} in Apopka, FL`,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${business.name} | Professional Cleaning in Apopka, FL`,
+    description:
+      "Local house and office cleaning in Apopka, FL. Free online quotes for residential, deep clean, move-out, and commercial work.",
+    images: [
+      "https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=1200&q=80",
+    ],
+  },
 };
 
 export default function RootLayout({

@@ -12,8 +12,16 @@ const AI_USER_AGENTS = [
   "Applebot-Extended",
 ] as const;
 
+const GOOGLE_USER_AGENTS = [
+  "Googlebot",
+  "Googlebot-Image",
+  "GoogleOther",
+] as const;
+
 export default function robots(): MetadataRoute.Robots {
   const base = business.url.replace(/\/$/, "");
+  const hostname = new URL(business.url).host;
+
   return {
     rules: [
       {
@@ -22,11 +30,15 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/api/"],
       },
       {
+        userAgent: [...GOOGLE_USER_AGENTS],
+        allow: "/",
+      },
+      {
         userAgent: [...AI_USER_AGENTS],
         allow: "/",
       },
     ],
     sitemap: `${base}/sitemap.xml`,
-    host: base,
+    host: hostname,
   };
 }
